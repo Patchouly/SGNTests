@@ -1,12 +1,54 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <h:head>
-        <title>Facelet Title</title>
-    </h:head>
-    <h:body>
-        Hello from Facelets
-    </h:body>
-</html>
 
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <head>
+        <title>Keynonator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="css/bootstrap.css" media="screen"/>
+        <link rel="stylesheet" href="css/theme.css"/>
+    </head>
+    <body>
+        <div class="container">
+
+            <br/><br/>
+            <br/><br/>
+
+            <div class="row-fluid">
+                <h:form class="form-horizontal">
+                    <fieldset>
+                        <div id="legend">
+                            <legend class="">FOrmulario de criptografia</legend>
+                        </div>
+
+                        <h:messages/>
+                        <!-- key 1 -->
+                        <div class="control-group">
+                            <label class="control-label"  for="key1"> Chave 1</label>
+                            <div class="controls">
+                                <h:inputText  id="key1" value="#{keyBean.key1}" p:placeholder="Enter Key 1" class="input-xlarge"/>
+                            </div>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="control-group">
+                            <div class="controls">
+                                <h:commandButton value="Registration" action="#{keyBean.submit()}" class="btn btn-success"/>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </h:form>
+            </div>
+
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+    </body>
+</html>
