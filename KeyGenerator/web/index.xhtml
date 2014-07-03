@@ -11,6 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta charset="utf-8"/>
         <link rel="stylesheet" href="css/bootstrap.css" media="screen"/>
+        <link rel="stylesheet" href="css/datepicker.css"/>
         <link rel="stylesheet" href="css/theme.css"/>
     </head>
     <body>
@@ -34,17 +35,17 @@
                                 <h:inputText  id="key1" value="#{keyBean.key1}" p:placeholder="Enter Key 1" class="input-xlarge"/>
                             </div>
                         </div>
-                        
+
                         <!-- data expiration -->
                         <div class="control-group">
                             <label class="control-label"  for="dateExp"> Data Expiração</label>
                             <div class='input-group date' id='datetimepicker'>
-                                <input type='text' class="form-control" p:placeholder="dd/mm/yyyy" value="#{keyBean.date}"/>
+                                <input type='text' class="form-control datepicker" p:placeholder="dd/mm/yyyy" value="#{keyBean.date}"/>
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                                 </span>
                             </div>
                         </div>
-                        
+
                         <br/><br/>
                         <!-- Submit -->
                         <div class="control-group">
@@ -58,8 +59,16 @@
             </div>
 
         </div>
-
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+        <script src="js/bootstrap-datepicker.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $(".datepicker").datepicker({
+                    language: "pt-BR",
+                    format:'dd/mm/yyyy'
+                })
+            });
+        </script>
     </body>
 </html>
