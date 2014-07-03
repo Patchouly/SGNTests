@@ -34,7 +34,18 @@
                                 <h:inputText  id="key1" value="#{keyBean.key1}" p:placeholder="Enter Key 1" class="input-xlarge"/>
                             </div>
                         </div>
-
+                        
+                        <!-- data expiration -->
+                        <div class="control-group">
+                            <label class="control-label"  for="dateExp"> Data Expiração</label>
+                            <div class='input-group date' id='datetimepicker'>
+                                <input type='text' class="form-control" p:placeholder="dd/mm/yyyy" value="#{keyBean.date}"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <br/><br/>
                         <!-- Submit -->
                         <div class="control-group">
                             <div class="controls">
