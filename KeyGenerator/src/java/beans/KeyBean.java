@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package beans;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -19,28 +19,45 @@ import utils.DesEncrypter;
  */
 @SessionScoped
 @ManagedBean(name = "keyBean")
-public class KeyBean implements Serializable{
+public class KeyBean implements Serializable {
+
     private String key1;
     private String code1;
-    
+
     private Integer meses;
-    private Date date;
-    
-    public void submit(){
-        code1 = encriptonator(key1);
-        String serial = "key1: "+key1+" code1: "+code1;
-        System.out.println(serial+ " backward: "+DesEncriptonator(code1));
+    private String date;
+
+    public void submit() {
+        Date sysDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+        String iniDate = sdf.format(sysDate);
+        String endDate = "null";
+        if (date != null) {
+             endDate = date.replace("/","");
+             System.out.println("Data null");
+        }
+        String fullCode = key1+"SGN"+iniDate+"SGN"+endDate;
+        code1 = encriptonator(fullCode);
+        System.out.println("fullCode: "+fullCode);
+        System.out.println("criptografia: "+ code1);
+        timeLeft(code1);
     }
 
+    public void timeLeft(String criptografy){
+        String originalCode = DesEncriptonator(criptografy);
+        System.out.println("backward: " + originalCode);
+    }
+    
     public String encriptonator(String chave) {
         DesEncrypter encrypter = new DesEncrypter("aabcca");
         return encrypter.encrypt(chave);
     }
+
     public String DesEncriptonator(String chave) {
         DesEncrypter encrypter = new DesEncrypter("aabcca");
         return encrypter.decrypt(chave);
     }
-    
+
     public String getKey1() {
         return key1;
     }
@@ -65,13 +82,12 @@ public class KeyBean implements Serializable{
         this.meses = meses;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
-    
-    
+
 }

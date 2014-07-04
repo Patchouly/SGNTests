@@ -24,15 +24,15 @@
                 <h:form class="form-horizontal">
                     <fieldset>
                         <div id="legend">
-                            <legend class="">FOrmulario de criptografia</legend>
+                            <legend class="">Gerador de licenças SGN</legend>
                         </div>
 
                         <h:messages/>
                         <!-- key 1 -->
                         <div class="control-group">
-                            <label class="control-label"  for="key1"> Chave 1</label>
+                            <label class="control-label"  for="key">Código Verificação</label>
                             <div class="controls">
-                                <h:inputText  id="key1" value="#{keyBean.key1}" p:placeholder="Enter Key 1" class="input-xlarge"/>
+                                <h:inputText  id="key" value="#{keyBean.key1}" p:placeholder="Entre com o código" class="input-xlarge"/>
                             </div>
                         </div>
 
@@ -40,7 +40,7 @@
                         <div class="control-group">
                             <label class="control-label"  for="dateExp"> Data Expiração</label>
                             <div class='input-group date' id='datetimepicker'>
-                                <input type='text' class="form-control datepicker" p:placeholder="dd/mm/yyyy" value="#{keyBean.date}"/>
+                                <h:inputText class="form-control datepicker" p:placeholder="dd/mm/yyyy" h:value="#{keyBean.date}"/>
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                                 </span>
                             </div>
@@ -49,8 +49,8 @@
                         <br/><br/>
                         <!-- Submit -->
                         <div class="control-group">
-                            <div class="controls">
-                                <h:commandButton value="Registration" action="#{keyBean.submit()}" class="btn btn-success"/>
+                            <div class="controls" data-toggle="modal" data-target="#keyModal">
+                                <h:commandButton value="Gerar Licença" action="#{keyBean.submit()}" class="btn btn-success"/>
                             </div>
                         </div>
 
@@ -59,14 +59,31 @@
             </div>
 
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="keyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Chave</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p><h:outputLink value="#{keyBean.code1}"/></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="js/bootstrap-datepicker.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>
             $(document).ready(function() {
                 $(".datepicker").datepicker({
-                    language: "pt-BR",
-                    format:'dd/mm/yyyy'
+                    format: 'dd/mm/yyyy'
                 })
             });
         </script>
