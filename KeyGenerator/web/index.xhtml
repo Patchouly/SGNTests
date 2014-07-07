@@ -5,6 +5,29 @@
       xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+    <script src="js/jquery-1.11.1.min.js"/>
+    <script src="js/jquery.maskedinput.min.js"/>
+    <script src="js/bootstrap-datepicker.js"/>
+    <script src="js/bootstrap.min.js"/>
+    <script>
+        var $ = jQuery.noConflict();
+        $(document).ready(function() {
+            $(".cnpj").mask("99.999.999/9999-99");
+            $(document).on("focus", ".datepicker", function() {
+                $(".datepicker").datepicker({
+                    format: 'dd/mm/yyyy'
+                });
+            });
+        });
+    </script>
+    <style>
+        .panel {border: 1px solid cornflowerblue !important;}
+        .fundoAzul {border-color: cornflowerblue !important; background-color: cornflowerblue !important;}
+        .inputsize {width: 250px !important;}
+        .input-append .btn.dropdown-toggle {
+            float: none;
+        }
+    </style>
 
     <h:head>
         <title>Keynonator</title>
@@ -31,11 +54,30 @@
                         </div>
 
                         <h:messages/>
-                        <!-- key 1 -->
+
+                        <!-- Software -->
                         <div class="control-group">
-                            <label class="control-label"  for="key">Código Verificação</label>
+                            <label class="control-label" for="cnpj">Software</label>
+                            <div>
+                                <div class="input-append btn-group">
+                                    <input class="span2" id="appendedInputButton" size="16" type="text"/>
+                                    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-toggle">
+                                        <li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
+                                        <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+                                        <li><a href="#"><i class="icon-ban-circle"></i> Ban</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- cnpj -->
+                        <div class="control-group">
+                            <label class="control-label" for="cnpj">CNPJ</label>
                             <div class="controls">
-                                <h:inputText  id="key" value="#{keyBean.key1}" p:placeholder="Entre com o código" class="input-xlarge"/>
+                                <h:inputText id="cnpj" styleClass="cnpj" value="#{keyBean.cnpj}" p:placeholder="Entre com o CNPJ" class="input-xlarge inputsize"/>
                             </div>
                         </div>
 
@@ -43,43 +85,32 @@
                         <div class="control-group">
                             <label class="control-label"  for="dateExp"> Data Expiração</label>
                             <div class='input-group date' id='datetimepicker'>
-                                <h:inputText class="form-control datepicker" p:placeholder="dd/mm/yyyy" h:value="#{keyBean.date}"/>
+                                <h:inputText class="form-control datepicker inputsize" p:placeholder="dd/mm/yyyy" h:value="#{keyBean.date}"/>
                             </div>
                         </div>
                         <br/>
                         <!-- Submit -->
                         <div class="control-group">
                             <div class="controls" >
-                                <h:commandButton value="Gerar Licença" class="btn btn-success teste" action="#{keyBean.submit()}">
+                                <h:commandButton value="Gerar Licença" class="btn btn-primary fundoAzul" action="#{keyBean.submit()}">
                                 </h:commandButton>
                             </div>
                         </div>
                         <br/>
                         <!-- code -->
-                        <h:panelGroup class="alert alert-success" id="code" rendered="#{keyBean.success}" p:role="alert">
-                            <label class="control-label" for="key">#{keyBean.code1}</label>
-                        </h:panelGroup>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading fundoAzul">
+                                <h3 class="panel-title">Chave</h3>
+                            </div>
+                            <div class="panel-body">
+                                #{keyBean.code}
+                            </div>
+                        </div>
 
                     </fieldset>
                 </h:form>
             </div>
 
         </div>
-
-
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="js/bootstrap-datepicker.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script>
-
-            $(document).ready(function() {
-                $(document).on("focus", ".datepicker", function() {
-                    $(".datepicker").datepicker({
-                        format: 'dd/mm/yyyy'
-                    });
-                })
-            });
-        </script>
     </h:body>
 </html>

@@ -22,8 +22,9 @@ import utils.DesEncrypter;
 @ManagedBean(name = "keyBean")
 public class KeyBean implements Serializable {
 
-    private String key1;
-    private String code1;
+    private Integer software; // 0 = Genérico; 1 = PontoWeb; 
+    private String cnpj;
+    private String code;
 
     private Integer meses;
     private String date;
@@ -32,8 +33,8 @@ public class KeyBean implements Serializable {
     public void init() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             success = false;
-            key1 = "";
-            code1 = "";
+            cnpj = "";
+            code = "";
             date = "";
         }
     }
@@ -46,9 +47,9 @@ public class KeyBean implements Serializable {
         if (date != null) {
             endDate = date.replace("/", "");
         }
-        String fullCode = key1 + "SGN" + iniDate + "SGN" + endDate;
-        code1 = encriptonator(fullCode);
-        timeLeft(code1);
+        String fullCode = cnpj + "SGN" + iniDate + "SGN" + endDate;
+        code = encriptonator(fullCode);
+        timeLeft(code);
         success = true;
     }
 
@@ -66,20 +67,28 @@ public class KeyBean implements Serializable {
         return encrypter.decrypt(chave);
     }
 
-    public String getKey1() {
-        return key1;
+    public Integer getSoftware() {
+        return software;
     }
 
-    public void setKey1(String key1) {
-        this.key1 = key1;
+    public void setSoftware(Integer software) {
+        this.software = software;
     }
 
-    public String getCode1() {
-        return code1;
+    public String getCnpj() {
+        return cnpj;
     }
 
-    public void setCode1(String code1) {
-        this.code1 = code1;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Integer getMeses() {
