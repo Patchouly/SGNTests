@@ -33,6 +33,7 @@ public class KeyBean implements Serializable {
     public void init() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             success = false;
+            software = 0;
             cnpj = "";
             code = "";
             date = "";
@@ -47,7 +48,7 @@ public class KeyBean implements Serializable {
         if (date != null) {
             endDate = date.replace("/", "");
         }
-        String fullCode = cnpj + "SGN" + iniDate + "SGN" + endDate;
+        String fullCode = software + cnpj + iniDate + endDate;
         code = encriptonator(fullCode);
         timeLeft(code);
         success = true;
@@ -55,6 +56,7 @@ public class KeyBean implements Serializable {
 
     public void timeLeft(String criptografy) {
         String originalCode = DesEncriptonator(criptografy);
+        //System.out.println("original: "+originalCode);
     }
 
     public String encriptonator(String chave) {
