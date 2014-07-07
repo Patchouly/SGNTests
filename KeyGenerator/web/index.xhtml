@@ -6,22 +6,25 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 
-    <head>
+    <h:head>
         <title>Keynonator</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta charset="utf-8"/>
         <link rel="stylesheet" href="css/bootstrap.css" media="screen"/>
         <link rel="stylesheet" href="css/datepicker.css"/>
         <link rel="stylesheet" href="css/theme.css"/>
-    </head>
-    <body>
+        <f:metadata>
+            <f:event type="preRenderComponent" listener="#{keyBean.init()}"></f:event>
+        </f:metadata>
+    </h:head>
+    <h:body>
         <div class="container">
 
             <br/><br/>
             <br/><br/>
 
             <div class="row-fluid">
-                <h:form class="form-horizontal">
+                <h:form id="form" class="form-horizontal" prependId="false">
                     <fieldset>
                         <div id="legend">
                             <legend class="">Gerador de licenças SGN</legend>
@@ -41,18 +44,21 @@
                             <label class="control-label"  for="dateExp"> Data Expiração</label>
                             <div class='input-group date' id='datetimepicker'>
                                 <h:inputText class="form-control datepicker" p:placeholder="dd/mm/yyyy" h:value="#{keyBean.date}"/>
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                                </span>
                             </div>
                         </div>
-
-                        <br/><br/>
+                        <br/>
                         <!-- Submit -->
                         <div class="control-group">
-                            <div class="controls" data-toggle="modal" data-target="#keyModal">
-                                <h:commandButton value="Gerar Licença" action="#{keyBean.submit()}" class="btn btn-success"/>
+                            <div class="controls" >
+                                <h:commandButton value="Gerar Licença" class="btn btn-success teste" action="#{keyBean.submit()}">
+                                </h:commandButton>
                             </div>
                         </div>
+                        <br/>
+                        <!-- code -->
+                        <h:panelGroup class="alert alert-success" id="code" rendered="#{keyBean.success}" p:role="alert">
+                            <label class="control-label" for="key">#{keyBean.code1}</label>
+                        </h:panelGroup>
 
                     </fieldset>
                 </h:form>
@@ -60,32 +66,20 @@
 
         </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="keyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Chave</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p><h:outputLink value="#{keyBean.code1}"/></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="js/bootstrap-datepicker.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>
+
             $(document).ready(function() {
-                $(".datepicker").datepicker({
-                    format: 'dd/mm/yyyy'
+                $(document).on("focus", ".datepicker", function() {
+                    $(".datepicker").datepicker({
+                        format: 'dd/mm/yyyy'
+                    });
                 })
             });
         </script>
-    </body>
+    </h:body>
 </html>

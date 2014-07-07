@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import mb.keyator;
 import utils.DesEncrypter;
 
@@ -26,6 +27,16 @@ public class KeyBean implements Serializable {
 
     private Integer meses;
     private String date;
+    private boolean success;
+
+    public void init() {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            success = false;
+            key1 = "";
+            code1 = "";
+            date = "";
+        }
+    }
 
     public void submit() {
         Date sysDate = new Date();
@@ -33,21 +44,18 @@ public class KeyBean implements Serializable {
         String iniDate = sdf.format(sysDate);
         String endDate = "null";
         if (date != null) {
-             endDate = date.replace("/","");
-             System.out.println("Data null");
+            endDate = date.replace("/", "");
         }
-        String fullCode = key1+"SGN"+iniDate+"SGN"+endDate;
+        String fullCode = key1 + "SGN" + iniDate + "SGN" + endDate;
         code1 = encriptonator(fullCode);
-        System.out.println("fullCode: "+fullCode);
-        System.out.println("criptografia: "+ code1);
         timeLeft(code1);
+        success = true;
     }
 
-    public void timeLeft(String criptografy){
+    public void timeLeft(String criptografy) {
         String originalCode = DesEncriptonator(criptografy);
-        System.out.println("backward: " + originalCode);
     }
-    
+
     public String encriptonator(String chave) {
         DesEncrypter encrypter = new DesEncrypter("aabcca");
         return encrypter.encrypt(chave);
@@ -88,6 +96,14 @@ public class KeyBean implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
 }
