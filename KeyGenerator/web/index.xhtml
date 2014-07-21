@@ -5,32 +5,8 @@
       xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <script src="js/jquery-1.11.1.min.js"/>
-    <script src="js/jquery.maskedinput.min.js"/>
-    <script src="js/bootstrap-datepicker.js"/>
-    <script src="js/bootstrap.min.js"/>
-    <script>
-        var $ = jQuery.noConflict();
-        $(document).ready(function() {
-            $(".cnpj").mask("99.999.999/9999-99");
-            $(document).on("focus", ".datepicker", function() {
-                $(".datepicker").datepicker({
-                    format: 'dd/mm/yyyy'
-                });
-            });
-        });
-    </script>
-    <style>
-        .panel {border: 1px solid cornflowerblue !important;}
-        .fundoAzul {border-color: cornflowerblue !important; background-color: cornflowerblue !important;}
-        .inputsize {width: 250px !important;}
-        .input-append .btn.dropdown-toggle {
-            float: none;
-        }
-    </style>
-
     <h:head>
-        <title>Keynonator</title>
+        <title>Key Generator</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta charset="utf-8"/>
         <link rel="stylesheet" href="css/bootstrap.css" media="screen"/>
@@ -39,6 +15,18 @@
         <f:metadata>
             <f:event type="preRenderComponent" listener="#{keyBean.init()}"></f:event>
         </f:metadata>
+        <script src="js/jquery-1.11.1.min.js"/>
+        <script src="js/jquery.maskedinput.min.js"/>
+        <script src="js/bootstrap.min.js"/>
+        <script src="js/bootstrap-datepicker.js"/>
+        <style>
+            .panel {border: 1px solid cornflowerblue !important;}
+            .fundoAzul {border-color: cornflowerblue !important; background-color: cornflowerblue !important;}
+            .inputsize {width: 250px !important;}
+            .input-append .btn.dropdown-toggle {
+                float: none;
+            }
+        </style>
     </h:head>
     <h:body>
         <div class="container">
@@ -61,8 +49,17 @@
                             <div>
                                 <h:selectOneMenu value="#{keyBean.software}" class="inputsize">
                                     <f:selectItem itemValue="1" itemLabel="Ponto Web" />
-                                    <f:selectItem itemValue="2" itemLabel="..." />	   							
+                                    <f:selectItem itemValue="2" itemLabel="Procuradoria" />	   							
                                 </h:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <!-- pessoa -->
+                        <div class="control-group">
+
+                            <div class="controls">
+                                <input id="pessoa" name="pessoa" type="checkbox"/>
+                                <label class="control-label" for="Pessoa"> Pessoa Física?</label>
                             </div>
                         </div>
 
@@ -70,7 +67,15 @@
                         <div class="control-group">
                             <label class="control-label" for="cnpj">CNPJ</label>
                             <div class="controls">
-                                <h:inputText id="cnpj" styleClass="cnpj" value="#{keyBean.cnpj}" p:placeholder="Entre com o CNPJ" class="input-xlarge inputsize"/>
+                                <input id="cnpj" name="cnpj" value="#{keyBean.cnpj}" placeholder="Entre com o CNPJ" class="input-xlarge inputsize cnpj"/>
+                            </div>
+                        </div>
+
+                        <!-- cpf -->
+                        <div class="control-group">
+                            <label class="control-label" for="cnpj">CPF</label>
+                            <div class="controls">
+                                <input id="cpf" name="cpf" value="#{keyBean.cpf}" placeholder="Entre com o CPF" class="input-xlarge inputsize cpf"/>
                             </div>
                         </div>
 
@@ -105,5 +110,19 @@
             </div>
 
         </div>
+
+        <script>
+            $(document).ready(function() {
+                $(".cnpj").mask("99.999.999/9999-99");
+                $(".cpf").mask("999.999.999-99");
+                $(".date").mask("99/99/9999");
+                $(document).on("focus", ".datepicker", function() {
+                    $(".datepicker").datepicker({
+                        format: 'dd/mm/yyyy'
+                    });
+                });
+            });
+        </script>
+
     </h:body>
 </html>
