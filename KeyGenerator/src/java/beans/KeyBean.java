@@ -68,6 +68,7 @@ public class KeyBean implements Serializable {
         System.out.println("fullcode: " + fullCode);
         System.out.println("With separator: "+fullCodeSeparator);
         code = encriptonator(fullCode);
+        System.out.println("code: "+code);
         timeLeft(code);
         success = true;
     }
