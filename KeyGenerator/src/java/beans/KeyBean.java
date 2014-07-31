@@ -12,6 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
+import mb.KeyMB;
 import mb.keyator;
 import utils.DesEncrypter;
 
@@ -24,6 +25,7 @@ import utils.DesEncrypter;
 public class KeyBean implements Serializable {
 
     private Integer software; // 0 = Genérico; 1 = PontoWeb; 2 = procuradoria;
+    private String cliente;
     private String cnpj;
     private String cpf;
     private String code;
@@ -36,6 +38,7 @@ public class KeyBean implements Serializable {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             success = false;
             software = 0;
+            cliente = "";
             cnpj = "";
             cpf = "";
             code = "";
@@ -53,17 +56,20 @@ public class KeyBean implements Serializable {
         }
         String fullCode = "";
         String fullCodeSeparator = "";
+        Boolean fisica;
         HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         if ((req.getParameter("pessoa") != null) && (req.getParameter("pessoa").equals("on"))){
             cpf = req.getParameter("cpf");
             cpf = cpf.replace(".", "").replace("-", "");
             fullCode = software + cpf + iniDate + endDate;
             fullCodeSeparator = software +" - "+ cpf +" - "+ iniDate +" - "+ endDate;
+            fisica = true;
         } else {
             cnpj = req.getParameter("cnpj");
             cnpj = cnpj.replace(".", "").replace("-", "").replace("/", "");
             fullCode = software + cnpj + iniDate + endDate;
             fullCodeSeparator = software +" - "+ cnpj +" - "+ iniDate +" - "+ endDate;
+            fisica = false;
         }
         System.out.println("fullcode: " + fullCode);
         System.out.println("With separator: "+fullCodeSeparator);
@@ -71,6 +77,12 @@ public class KeyBean implements Serializable {
         System.out.println("code: "+code);
         timeLeft(code);
         success = true;
+        KeyMB keyMB = new KeyMB();
+        if (fisica){
+            keyMB.saveCPFKey(cpf, cliente, endDate, code);
+        } else {
+            keyMB.saveCNPJKey(cnpj, cliente, endDate, code);
+        }
     }
 
     public void timeLeft(String criptografy) {
@@ -142,6 +154,14 @@ public class KeyBean implements Serializable {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
     }
 
 }

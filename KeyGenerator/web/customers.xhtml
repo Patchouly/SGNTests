@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Clientes SGN</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <f:metadata>
+            <f:event type="preRenderComponent" listener="#{customerBean.init()}"/>
+            <f:view encoding="ISO-8859-1"/>  
+        </f:metadata>
+    </head>
+    <body>
+        <h:dataTable id="table1" value="#{customerBean.cliente}" var="cliente"
+                     border="1" class="table table-condensed">
+            <f:facet name="header">
+                <h:outputText value="Lista de Clientes" />
+            </f:facet>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="CNPJ" />
+                </f:facet>
+                <h:outputText value="#{cliente.cnpj}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Cliente" />
+                </f:facet>
+                <h:outputText value="#{cliente.nome}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Chave" />
+                </f:facet>
+                <h:outputText value="#{cliente.chave}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Expira" />
+                </f:facet>
+                <h:outputText value="#{cliente.exp}" />
+            </h:column>
+        </h:dataTable>
+    </body>
+</html>
