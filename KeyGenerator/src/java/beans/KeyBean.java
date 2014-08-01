@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import mb.KeyMB;
 import mb.keyator;
 import utils.DesEncrypter;
+import utils.Base64Crypt;
 
 /**
  *
@@ -33,9 +34,14 @@ public class KeyBean implements Serializable {
     private Integer meses;
     private String date;
     private boolean success;
+    private Base64Crypt td;
+    
+    //chave de cryptografia e descryptografia
+    private String key = "deadwood8986deadwood8986";
 
     public void init() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
+            td = new Base64Crypt("deadwood8986deadwood8986");
             success = false;
             software = 0;
             cliente = "";
@@ -58,30 +64,35 @@ public class KeyBean implements Serializable {
         String fullCodeSeparator = "";
         Boolean fisica;
         HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        if ((req.getParameter("pessoa") != null) && (req.getParameter("pessoa").equals("on"))){
+        if ((req.getParameter("pessoa") != null) && (req.getParameter("pessoa").equals("on"))) {
             cpf = req.getParameter("cpf");
             cpf = cpf.replace(".", "").replace("-", "");
             fullCode = software + cpf + iniDate + endDate;
-            fullCodeSeparator = software +" - "+ cpf +" - "+ iniDate +" - "+ endDate;
+            fullCodeSeparator = software + " - " + cpf + " - " + iniDate + " - " + endDate;
             fisica = true;
         } else {
             cnpj = req.getParameter("cnpj");
             cnpj = cnpj.replace(".", "").replace("-", "").replace("/", "");
             fullCode = software + cnpj + iniDate + endDate;
-            fullCodeSeparator = software +" - "+ cnpj +" - "+ iniDate +" - "+ endDate;
+            fullCodeSeparator = software + " - " + cnpj + " - " + iniDate + " - " + endDate;
             fisica = false;
         }
         System.out.println("fullcode: " + fullCode);
-        System.out.println("With separator: "+fullCodeSeparator);
+        System.out.println("With separator: " + fullCodeSeparator);
+        System.out.println("key: "+key);
         code = encriptonator(fullCode);
-        System.out.println("code: "+code);
-        timeLeft(code);
-        success = true;
-        KeyMB keyMB = new KeyMB();
-        if (fisica){
-            keyMB.saveCPFKey(cpf, cliente, endDate, code);
+        System.out.println("code: " + code);
+        if (fullCode.equals(DesEncriptonator(code))) {
+            timeLeft(code);
+            success = true;
+            KeyMB keyMB = new KeyMB();
+            if (fisica) {
+                keyMB.saveCPFKey(cpf, cliente, endDate, code);
+            } else {
+                keyMB.saveCNPJKey(cnpj, cliente, endDate, code);
+            }
         } else {
-            keyMB.saveCNPJKey(cnpj, cliente, endDate, code);
+            code = "Chave criptografada não pode ser descriptografada!";
         }
     }
 
@@ -91,13 +102,21 @@ public class KeyBean implements Serializable {
     }
 
     public String encriptonator(String chave) {
-        DesEncrypter encrypter = new DesEncrypter("aabbccaa");
-        return encrypter.encrypt(chave);
+        /*
+         DesEncrypter encrypter = new DesEncrypter("aabbccaa");
+         return encrypter.encrypt(chave);
+         */
+        
+        return td.encrypt(chave);
+                
     }
 
     public String DesEncriptonator(String chave) {
-        DesEncrypter encrypter = new DesEncrypter("aabbccaa");
-        return encrypter.decrypt(chave);
+        /*
+         DesEncrypter encrypter = new DesEncrypter("aabbccaa");
+         return encrypter.decrypt(chave);
+         */
+        return td.decrypt(chave);
     }
 
     public Integer getSoftware() {

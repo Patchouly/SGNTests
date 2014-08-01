@@ -10,18 +10,20 @@ import DAO.exceptions.IllegalOrphanException;
 import DAO.exceptions.NonexistentEntityException;
 import DAO.exceptions.PreexistingEntityException;
 import DAO.exceptions.RollbackFailureException;
-import entitys.Clientes;
+import entities.Clientes;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entitys.Licencas;
+import entities.Licencas;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 import javax.transaction.UserTransaction;
+import javax.ws.rs.client.Client;
 
 /**
  *
@@ -205,4 +207,18 @@ public class ClientesJpaController implements Serializable {
         }
     }
     
+    public Clientes findClientesByCNPJ(String cnpj) {
+        EntityManager em = getEntityManager();
+        Clientes cliente = new Clientes();
+        try {
+            TypedQuery<Clientes> query = em.createNamedQuery("Clientes.findByCnpj", Clientes.class);
+            cliente = query.setParameter("cnpj", cnpj).getSingleResult();
+        } catch (Exception e) {
+             e.getStackTrace();
+            System.out.println("findClientesByCNPJ e:> " + e);
+        } finally {
+            em.close();
+            return cliente;
+        }
+    }
 }
