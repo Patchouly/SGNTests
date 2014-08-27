@@ -1,4 +1,4 @@
-package DAO.exceptions;
+package JPA.exceptions;
 
 public class RollbackFailureException extends Exception {
     public RollbackFailureException(String message, Throwable cause) {

@@ -5,7 +5,7 @@
  */
 package mb;
 
-import DAO.ClientesJpaController;
+import JPA.ClientesJpaController;
 import entities.Clientes;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -64,5 +64,10 @@ public class KeyMB implements Serializable {
         } catch (Exception e) {
             System.out.println("saveCPFKey e:> " + e);
         }
+    }
+    
+    public int countClientes() {
+        ClientesJpaController clientesJpaController = new ClientesJpaController();
+        return clientesJpaController.getClientesCount();
     }
 }

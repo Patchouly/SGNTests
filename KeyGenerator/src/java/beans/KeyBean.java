@@ -38,10 +38,12 @@ public class KeyBean implements Serializable {
     
     //chave de cryptografia e descryptografia
     private String key = "deadwood8986deadwood8986";
+    //private String key = "haeykcufacirema080820141";
 
     public void init() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             td = new Base64Crypt("deadwood8986deadwood8986");
+            //td = new Base64Crypt("haeykcufacirema080820141");
             success = false;
             software = 0;
             cliente = "";
@@ -53,6 +55,11 @@ public class KeyBean implements Serializable {
     }
 
     public void submit() {
+        if (software == 1){
+            td = new Base64Crypt("sgnsolucoesenegociossgn1");
+        } else if (software == 2){
+            td = new Base64Crypt("deadwood8986deadwood8986");
+        }
         Date sysDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
         String iniDate = sdf.format(sysDate);
@@ -67,14 +74,14 @@ public class KeyBean implements Serializable {
         if ((req.getParameter("pessoa") != null) && (req.getParameter("pessoa").equals("on"))) {
             cpf = req.getParameter("cpf");
             cpf = cpf.replace(".", "").replace("-", "");
-            fullCode = software + cpf + iniDate + endDate;
-            fullCodeSeparator = software + " - " + cpf + " - " + iniDate + " - " + endDate;
+            fullCode = software+ iniDate + endDate + cpf ;
+            fullCodeSeparator = software + " - " + iniDate + " - " + endDate + " - " + cpf;
             fisica = true;
         } else {
             cnpj = req.getParameter("cnpj");
             cnpj = cnpj.replace(".", "").replace("-", "").replace("/", "");
-            fullCode = software + cnpj + iniDate + endDate;
-            fullCodeSeparator = software + " - " + cnpj + " - " + iniDate + " - " + endDate;
+            fullCode = software+ iniDate + endDate + cnpj ;
+            fullCodeSeparator = software + " - " + iniDate + " - " + endDate + " - " + cnpj ;
             fisica = false;
         }
         System.out.println("fullcode: " + fullCode);
@@ -86,11 +93,13 @@ public class KeyBean implements Serializable {
             timeLeft(code);
             success = true;
             KeyMB keyMB = new KeyMB();
+            /*int clientes = keyMB.countClientes();
+            System.out.println("Nº Clientes: "+clientes);
             if (fisica) {
                 keyMB.saveCPFKey(cpf, cliente, endDate, code);
             } else {
                 keyMB.saveCNPJKey(cnpj, cliente, endDate, code);
-            }
+            }*/
         } else {
             code = "Chave criptografada não pode ser descriptografada!";
         }
@@ -102,20 +111,10 @@ public class KeyBean implements Serializable {
     }
 
     public String encriptonator(String chave) {
-        /*
-         DesEncrypter encrypter = new DesEncrypter("aabbccaa");
-         return encrypter.encrypt(chave);
-         */
-        
         return td.encrypt(chave);
-                
     }
 
     public String DesEncriptonator(String chave) {
-        /*
-         DesEncrypter encrypter = new DesEncrypter("aabbccaa");
-         return encrypter.decrypt(chave);
-         */
         return td.decrypt(chave);
     }
 

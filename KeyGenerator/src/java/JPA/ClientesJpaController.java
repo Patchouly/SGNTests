@@ -4,12 +4,11 @@
  * and open the template in the editor.
  */
 
-package DAO;
+package JPA;
 
-import DAO.exceptions.IllegalOrphanException;
-import DAO.exceptions.NonexistentEntityException;
-import DAO.exceptions.PreexistingEntityException;
-import DAO.exceptions.RollbackFailureException;
+import JPA.exceptions.IllegalOrphanException;
+import JPA.exceptions.NonexistentEntityException;
+import JPA.exceptions.RollbackFailureException;
 import entities.Clientes;
 import java.io.Serializable;
 import javax.persistence.Query;
@@ -23,7 +22,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.transaction.UserTransaction;
-import javax.ws.rs.client.Client;
 
 /**
  *
@@ -32,7 +30,6 @@ import javax.ws.rs.client.Client;
 public class ClientesJpaController implements Serializable {
 
     public ClientesJpaController() {
-        this.emf = emf;
     }
     private EntityManagerFactory emf = JPAUtil.getEMF();
 
@@ -40,13 +37,14 @@ public class ClientesJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Clientes clientes) throws PreexistingEntityException, RollbackFailureException, Exception {
+    public void create(Clientes clientes) throws RollbackFailureException, Exception {
         if (clientes.getLicencasList() == null) {
             clientes.setLicencasList(new ArrayList<Licencas>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
+            em.getTransaction().begin();
             List<Licencas> attachedLicencasList = new ArrayList<Licencas>();
             for (Licencas licencasListLicencasToAttach : clientes.getLicencasList()) {
                 licencasListLicencasToAttach = em.getReference(licencasListLicencasToAttach.getClass(), licencasListLicencasToAttach.getId());
@@ -63,9 +61,12 @@ public class ClientesJpaController implements Serializable {
                     oldClienteIdOfLicencasListLicencas = em.merge(oldClienteIdOfLicencasListLicencas);
                 }
             }
+            em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findClientes(clientes.getId()) != null) {
-                throw new PreexistingEntityException("Clientes " + clientes + " already exists.", ex);
+            try {
+                em.getTransaction().rollback();
+            } catch (Exception re) {
+                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
             throw ex;
         } finally {
@@ -79,6 +80,7 @@ public class ClientesJpaController implements Serializable {
         EntityManager em = null;
         try {
             em = getEntityManager();
+            em.getTransaction().begin();
             Clientes persistentClientes = em.find(Clientes.class, clientes.getId());
             List<Licencas> licencasListOld = persistentClientes.getLicencasList();
             List<Licencas> licencasListNew = clientes.getLicencasList();
@@ -113,7 +115,13 @@ public class ClientesJpaController implements Serializable {
                     }
                 }
             }
+            em.getTransaction().commit();
         } catch (Exception ex) {
+            try {
+                em.getTransaction().rollback();
+            } catch (Exception re) {
+                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
+            }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = clientes.getId();
@@ -133,6 +141,7 @@ public class ClientesJpaController implements Serializable {
         EntityManager em = null;
         try {
             em = getEntityManager();
+            em.getTransaction().begin();
             Clientes clientes;
             try {
                 clientes = em.getReference(Clientes.class, id);
@@ -152,7 +161,13 @@ public class ClientesJpaController implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(clientes);
+            em.getTransaction().commit();
         } catch (Exception ex) {
+            try {
+                em.getTransaction().rollback();
+            } catch (Exception re) {
+                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
+            }
             throw ex;
         } finally {
             if (em != null) {
@@ -212,7 +227,7 @@ public class ClientesJpaController implements Serializable {
         Clientes cliente = new Clientes();
         try {
             TypedQuery<Clientes> query = em.createNamedQuery("Clientes.findByCnpj", Clientes.class);
-            cliente = query.setParameter("cnpj", cnpj).getSingleResult();
+            cliente = (Clientes) query.setParameter("cnpj", cnpj).getSingleResult();
         } catch (Exception e) {
              e.getStackTrace();
             System.out.println("findClientesByCNPJ e:> " + e);
@@ -221,4 +236,5 @@ public class ClientesJpaController implements Serializable {
             return cliente;
         }
     }
+    
 }
