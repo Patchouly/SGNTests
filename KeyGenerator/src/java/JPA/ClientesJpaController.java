@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
 import javax.transaction.UserTransaction;
 
 /**
@@ -31,6 +31,7 @@ public class ClientesJpaController implements Serializable {
 
     public ClientesJpaController() {
     }
+    private UserTransaction utx = null;
     private EntityManagerFactory emf = JPAUtil.getEMF();
 
     public EntityManager getEntityManager() {
@@ -43,8 +44,8 @@ public class ClientesJpaController implements Serializable {
         }
         EntityManager em = null;
         try {
+            utx.begin();
             em = getEntityManager();
-            em.getTransaction().begin();
             List<Licencas> attachedLicencasList = new ArrayList<Licencas>();
             for (Licencas licencasListLicencasToAttach : clientes.getLicencasList()) {
                 licencasListLicencasToAttach = em.getReference(licencasListLicencasToAttach.getClass(), licencasListLicencasToAttach.getId());
@@ -61,10 +62,10 @@ public class ClientesJpaController implements Serializable {
                     oldClienteIdOfLicencasListLicencas = em.merge(oldClienteIdOfLicencasListLicencas);
                 }
             }
-            em.getTransaction().commit();
+            utx.commit();
         } catch (Exception ex) {
             try {
-                em.getTransaction().rollback();
+                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -79,8 +80,8 @@ public class ClientesJpaController implements Serializable {
     public void edit(Clientes clientes) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
+            utx.begin();
             em = getEntityManager();
-            em.getTransaction().begin();
             Clientes persistentClientes = em.find(Clientes.class, clientes.getId());
             List<Licencas> licencasListOld = persistentClientes.getLicencasList();
             List<Licencas> licencasListNew = clientes.getLicencasList();
@@ -115,10 +116,10 @@ public class ClientesJpaController implements Serializable {
                     }
                 }
             }
-            em.getTransaction().commit();
+            utx.commit();
         } catch (Exception ex) {
             try {
-                em.getTransaction().rollback();
+                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -140,8 +141,8 @@ public class ClientesJpaController implements Serializable {
     public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
+            utx.begin();
             em = getEntityManager();
-            em.getTransaction().begin();
             Clientes clientes;
             try {
                 clientes = em.getReference(Clientes.class, id);
@@ -161,10 +162,10 @@ public class ClientesJpaController implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(clientes);
-            em.getTransaction().commit();
+            utx.commit();
         } catch (Exception ex) {
             try {
-                em.getTransaction().rollback();
+                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -222,18 +223,29 @@ public class ClientesJpaController implements Serializable {
         }
     }
     
-    public Clientes findClientesByCNPJ(String cnpj) {
+    public Clientes findClientesByCNPJ(String cnpj){
         EntityManager em = getEntityManager();
-        Clientes cliente = new Clientes();
         try {
-            TypedQuery<Clientes> query = em.createNamedQuery("Clientes.findByCnpj", Clientes.class);
-            cliente = (Clientes) query.setParameter("cnpj", cnpj).getSingleResult();
-        } catch (Exception e) {
-             e.getStackTrace();
-            System.out.println("findClientesByCNPJ e:> " + e);
+            Clientes cliente = (Clientes) em.createNativeQuery("select * from clientes "
+                    + "where cnpj = '" + cnpj, Clientes.class).getSingleResult();
+            return cliente;
+        } catch (NoResultException e) {
+            return null;
         } finally {
             em.close();
+        }
+    }
+    
+    public Clientes findClientesByCPF(String cpf){
+        EntityManager em = getEntityManager();
+        try {
+            Clientes cliente = (Clientes) em.createNativeQuery("select * from clientes "
+                    + "where cpf = '" + cpf, Clientes.class).getSingleResult();
             return cliente;
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            em.close();
         }
     }
     

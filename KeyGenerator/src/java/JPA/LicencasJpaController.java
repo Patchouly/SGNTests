@@ -27,9 +27,12 @@ import javax.transaction.UserTransaction;
  */
 public class LicencasJpaController implements Serializable {
 
-    public LicencasJpaController() {
+    public LicencasJpaController(UserTransaction utx, EntityManagerFactory emf) {
+        this.utx = utx;
+        this.emf = emf;
     }
-    private EntityManagerFactory emf = JPAUtil.getEMF();
+    private UserTransaction utx = null;
+    private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -38,8 +41,7 @@ public class LicencasJpaController implements Serializable {
     public void create(Licencas licencas) throws PreexistingEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            em = getEntityManager();
-            em.getTransaction().begin();
+            utx.begin();
             em = getEntityManager();
             Clientes clienteId = licencas.getClienteId();
             if (clienteId != null) {
@@ -51,10 +53,10 @@ public class LicencasJpaController implements Serializable {
                 clienteId.getLicencasList().add(licencas);
                 clienteId = em.merge(clienteId);
             }
-            em.getTransaction().commit();
+            utx.commit();
         } catch (Exception ex) {
             try {
-                em.getTransaction().rollback();
+                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -72,8 +74,7 @@ public class LicencasJpaController implements Serializable {
     public void edit(Licencas licencas) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            em = getEntityManager();
-            em.getTransaction().begin();
+            utx.begin();
             em = getEntityManager();
             Licencas persistentLicencas = em.find(Licencas.class, licencas.getId());
             Clientes clienteIdOld = persistentLicencas.getClienteId();
@@ -91,10 +92,10 @@ public class LicencasJpaController implements Serializable {
                 clienteIdNew.getLicencasList().add(licencas);
                 clienteIdNew = em.merge(clienteIdNew);
             }
-            em.getTransaction().commit();
+            utx.commit();
         } catch (Exception ex) {
             try {
-                em.getTransaction().rollback();
+                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -116,8 +117,7 @@ public class LicencasJpaController implements Serializable {
     public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            em = getEntityManager();
-            em.getTransaction().begin();
+            utx.begin();
             em = getEntityManager();
             Licencas licencas;
             try {
@@ -132,10 +132,10 @@ public class LicencasJpaController implements Serializable {
                 clienteId = em.merge(clienteId);
             }
             em.remove(licencas);
-            em.getTransaction().commit();
+            utx.commit();
         } catch (Exception ex) {
             try {
-                em.getTransaction().rollback();
+                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

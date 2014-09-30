@@ -46,7 +46,7 @@ public class KeyMB implements Serializable {
         ClientesJpaController clientesJpaController = new ClientesJpaController();
         Clientes customer = new Clientes();
         try {
-            customer = clientesJpaController.findClientesByCNPJ(cpf);
+            customer = clientesJpaController.findClientesByCPF(cpf);
             if (customer.getId() != null) {
                 System.out.println("já existe");
                 Date expTime = new SimpleDateFormat("ddMMyyyy").parse(endDate);

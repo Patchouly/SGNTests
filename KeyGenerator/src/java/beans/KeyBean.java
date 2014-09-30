@@ -56,7 +56,7 @@ public class KeyBean implements Serializable {
 
     public void submit() {
         if (software == 1){
-            td = new Base64Crypt("sgnsolucoesenegociossgn1");
+             td = new Base64Crypt("sgnsolucoesenegociossgn1");
         } else if (software == 2){
             td = new Base64Crypt("deadwood8986deadwood8986");
         }
